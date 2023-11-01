@@ -1,6 +1,12 @@
 package Client;
 
-import java.awt.EventQueue;
+import Client.feature.remote.EventReceiver;
+import Client.feature.remote.RemoteDesktopHandler;
+import Client.feature.remote.ScreenSender;
+import packages.GeneralPackage;
+import packages.PackageType;
+
+import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,10 +16,10 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.awt.event.ActionEvent;
-import java.awt.FlowLayout;
+import java.net.UnknownHostException;
 
 public class ClientConnectForm extends JFrame implements Runnable{
 
@@ -21,20 +27,13 @@ public class ClientConnectForm extends JFrame implements Runnable{
 	private JTextField textField;
 
 	Socket socketFromServer;
-	
+	String ipServer;
+
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					new Thread(new ClientConnectForm()).start();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		new Thread(new ClientConnectForm()).start();
 	}
 
 	/**
@@ -54,15 +53,14 @@ public class ClientConnectForm extends JFrame implements Runnable{
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(434, 50, 89, 23);
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton connectButton = new JButton("New button");
+		connectButton.setBounds(434, 50, 89, 23);
+		connectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				connectAction(e);
-				
 			}
 		});
-		contentPane.add(btnNewButton);
+		contentPane.add(connectButton);
 		
 		JLabel lblNewLabel = new JLabel("Input IP Server Address");
 		lblNewLabel.setBounds(66, 54, 117, 14);
@@ -72,19 +70,40 @@ public class ClientConnectForm extends JFrame implements Runnable{
 		lblNewLabel_1.setFont(lblNewLabel_1.getFont().deriveFont(lblNewLabel_1.getFont().getSize() + 6f));
 		lblNewLabel_1.setBounds(222, 11, 182, 22);
 		contentPane.add(lblNewLabel_1);
+
+		this.setVisible(true);
 	}
 	
-	private void connectAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConnectActionPerformed
-        String ipServer = textField.getText();
+	private void connectAction(java.awt.event.ActionEvent evt) {
+       	ipServer = textField.getText();
         try {
             socketFromServer = new Socket(ipServer, 8888);
         } catch (Exception ex) {}
-    }//GEN-LAST:event_jButtonConnectActionPerformed
+    }
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		this.setVisible(true);
-		while (true) {}
+		while (true) {
+			try {
+				BufferedReader dis = new BufferedReader(new InputStreamReader(socketFromServer.getInputStream()));
+				String msg = dis.readLine();
+				System.out.println(msg);
+				if (msg != null && !msg.isEmpty()) {
+					packageHandle(msg);
+				}
+			} catch (Exception e) {
+				// e.printStackTrace();
+			}
+		}
 	}
+
+	private void packageHandle(String msg) throws UnknownHostException, IOException {
+		GeneralPackage pkTin = new GeneralPackage();
+		pkTin.phanTichMessage(msg);
+		if (pkTin.getType() == PackageType.REMOTE) {
+			new RemoteDesktopHandler(ipServer).xuLyRemoteDesktop(pkTin);
+		}
+		System.err.println(pkTin.toString());
+	}
+
 }

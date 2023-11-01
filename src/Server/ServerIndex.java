@@ -1,14 +1,23 @@
 package Server;
 
+import Server.checkconnection.CheckConnection;
+import Server.feature.remote.ReceiverForm;
+import Server.feature.remote.RemoteDesktopThread;
+import packages.RemoteDesktopPackage;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,6 +34,10 @@ public class ServerIndex extends JFrame implements Runnable{
 	private JPanel contentPane;
 	private JTable table;
     private DefaultTableModel tableModel;
+    private List<Socket> clients;
+
+    private int mainPort = 9876;
+    private int remotePort = 6996;
 
 	/**
 	 * Launch the application.
@@ -58,56 +71,98 @@ public class ServerIndex extends JFrame implements Runnable{
 	    tableModel.addColumn("IP Address");
 	    tableModel.addColumn("Port");
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(38, 60, 89, 23);
-		contentPane.add(btnNewButton);
+		JButton chatButton = new JButton("Nhắn tin");
+		chatButton.setBounds(38, 60, 89, 23);
+		contentPane.add(chatButton);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		btnNewButton_1.setBounds(192, 60, 89, 23);
-		contentPane.add(btnNewButton_1);
+		JButton sendFileButton = new JButton("Gửi file");
+		sendFileButton.setBounds(192, 60, 89, 23);
+		contentPane.add(sendFileButton);
 
-		JButton btnNewButton_2 = new JButton("New button");
-		btnNewButton_2.setBounds(350, 60, 89, 23);
-		contentPane.add(btnNewButton_2);
+		JButton captureScreenButton = new JButton("Chụp");
+		captureScreenButton.setBounds(350, 60, 89, 23);
+		contentPane.add(captureScreenButton);
 		
-		JButton btnNewButton_3 = new JButton("New button");
-		btnNewButton_3.setBounds(546, 60, 89, 23);
-		contentPane.add(btnNewButton_3);
+		JButton screenRecordButton = new JButton("Quay");
+		screenRecordButton.setBounds(546, 60, 89, 23);
+		contentPane.add(screenRecordButton);
 		
-		JButton btnNewButton_4 = new JButton("New button");
-		btnNewButton_4.setBounds(738, 60, 89, 23);
-		contentPane.add(btnNewButton_4);
+		JButton remoteButton = new JButton("Remote");
+		remoteButton.setBounds(738, 60, 89, 23);
+		contentPane.add(remoteButton);
+		remoteButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonRemoteDesktopActionPerformed(e);
+			}
+		});
 		
 		table = new JTable(tableModel);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(10, 113, 992, 283);
 		contentPane.add(scrollPane);
+		new Thread(new RemoteDesktopThread(remotePort)).start();
 	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub			
-		List<Socket> clients = new ArrayList<>();		
+		clients = new ArrayList<>();
 		this.setVisible(true);
-		try(ServerSocket server = new ServerSocket(8888);) {
+		try(ServerSocket server = new ServerSocket(8888)) {
 			while (true) {
 			  	Socket socket;
 			    try {
 			        socket = server.accept();
 			        clients.add(socket);
 			        this.addRow(socket);
+			        //new Thread(new CheckConnection(socket, this.tableModel, clients)).start();
 			    } catch (IOException ex) {
 			        ex.printStackTrace();
 			    }
-			}	
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void jButtonChatActionPerformed(java.awt.event.ActionEvent evt) {
+	}
+
+	private void jButtonSendFileActionPerformed(java.awt.event.ActionEvent evt) {
+	}
+
+	private void jButtonCaptureActionPerformed(java.awt.event.ActionEvent evt) {
+	}
+
+	private void jButtonRemoteDesktopActionPerformed(java.awt.event.ActionEvent evt) {
+		Socket client = getSelectedClient();
+		if(client == null) {
+		}
+		RemoteDesktopPackage rdp = new RemoteDesktopPackage();
+		rdp.setCmd("Start");
+		rdp.setMessage(String.valueOf(remotePort));
+		PrintWriter outputToClient;
+		try {
+			outputToClient = new PrintWriter(client.getOutputStream(), true);
+			outputToClient.println(rdp);
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 	
 	public void addRow(Socket socket) {
 		DefaultTableModel defaultTableModel = (DefaultTableModel) this.table.getModel();
 		defaultTableModel.addRow(new Object[] {socket.getInetAddress().getHostName(), socket.getInetAddress().getHostAddress(), socket.getPort()});
+	}
+
+	public Socket getSelectedClient() {
+		int selectedRow = table.getSelectedRow();
+
+		if (selectedRow != -1) {
+			return clients.get(selectedRow);
+		}
+		return null;
 	}
 }
