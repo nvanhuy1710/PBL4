@@ -2,8 +2,11 @@ package Server.feature.remote;
 
 import Client.feature.remote.RemoteDesktopHandler;
 
+import java.awt.*;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -23,21 +26,19 @@ public class RemoteDesktopThread implements Runnable{
                 Socket socket;
                 try {
                     socket = server.accept();
-                    DataInputStream disTmp = null;
-                    String w = null;
-                    String h = null;
+                    ObjectInputStream ois = null;
+                    Rectangle clientScreenDim = null;
                     try {
-                        disTmp = new DataInputStream(socket.getInputStream());
+                        ois = new ObjectInputStream(socket.getInputStream());
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
                     try {
-                        w = disTmp.readUTF();
-                        h = disTmp.readUTF();
+                        clientScreenDim = (Rectangle) ois.readObject();
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
-                    new Thread(new ReceiverForm(socket, w, h)).start();
+                    new Thread(new ReceiverForm(socket, clientScreenDim)).start();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

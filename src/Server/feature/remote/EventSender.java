@@ -1,6 +1,7 @@
 package Server.feature.remote;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.PrintWriter;
 
@@ -8,15 +9,14 @@ public class EventSender implements KeyListener, MouseListener, MouseMotionListe
 
     private final PrintWriter pw;
     private final JPanel panel;
-    private final double w;
-    private final double h;
+    private Rectangle clientScreenDim = null;
 
-    public EventSender(PrintWriter pw, JPanel panel, double w, double h) {
+    public EventSender(PrintWriter pw, JPanel panel, Rectangle clientScreenDim) {
         this.pw = pw;
         this.panel = panel;
-        this.w = w;
-        this.h = h;
+        this.clientScreenDim = clientScreenDim;
 
+        panel.requestFocus();
         panel.addKeyListener(this);
         panel.addMouseListener(this);
         panel.addMouseMotionListener(this);
@@ -81,12 +81,18 @@ public class EventSender implements KeyListener, MouseListener, MouseMotionListe
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        double xScale = clientScreenDim.getWidth() /panel.getWidth();
+        double yScale = clientScreenDim.getHeight() /panel.getHeight();
+        pw.println(-5);
+        pw.println((int)(e.getX() * xScale));
+        pw.println((int)(e.getY() * yScale));
+        pw.flush();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        double xScale = (double) w / panel.getWidth();
-        double yScale = (double) h / panel.getHeight();
+        double xScale = clientScreenDim.getWidth() / panel.getWidth();
+        double yScale = clientScreenDim.getHeight() / panel.getHeight();
         pw.println(-5);
         pw.println((int) (e.getX() * xScale));
         pw.println((int) (e.getY() * yScale));

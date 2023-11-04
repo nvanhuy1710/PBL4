@@ -44,7 +44,7 @@ public class ScreenSender implements Runnable {
             }
 
             try {
-                Thread.sleep(10);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

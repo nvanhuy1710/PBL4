@@ -5,6 +5,8 @@ import packages.GeneralPackage;
 import java.awt.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class RemoteDesktopHandler {
@@ -31,20 +33,17 @@ public class RemoteDesktopHandler {
 
                 // Lấy dimension màn hình
                 Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-                String width = "" + dim.getWidth();
-                String height = "" + dim.getHeight();
                 rectangle = new Rectangle(dim);
 
                 // Chuẩn bị robot thao tác màn hình
                 robot = new Robot(gDev);
-                DataOutputStream dos = new DataOutputStream(socketRemote.getOutputStream());
-                dos.writeUTF(width);
-                dos.writeUTF(height);
+                ObjectOutputStream dos = new ObjectOutputStream(socketRemote.getOutputStream());
+                dos.writeObject(rectangle);
                 dos.flush();
                 // Gởi màn hình
                 ScreenSender screenSender = new ScreenSender(socketRemote, robot, rectangle);
-                new EventReceiver(socketRemote, robot);
                 new Thread(screenSender).start();
+                new EventReceiver(socketRemote, robot);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

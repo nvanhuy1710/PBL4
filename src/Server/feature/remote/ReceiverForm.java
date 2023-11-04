@@ -15,22 +15,27 @@ public class ReceiverForm extends JFrame implements Runnable{
     private ScreenReceiver screenReceiver;
     private EventSender eventSender;
 
-    private double width;
-    private double height;
-
+    private Rectangle clientScreenDim = null;
     /**
      * Create the frame.
      */
-    public ReceiverForm(Socket socket, String w, String h) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 80, 1000, 600);
-        this.setLayout(new BorderLayout());
+    public ReceiverForm(Socket socket, Rectangle clientScreenDim) {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                closeForm(evt);
+            }
+        });
         contentPane = new JPanel();
-        this.add(contentPane, BorderLayout.CENTER);
+        contentPane.setPreferredSize(new java.awt.Dimension(1366, 768));
 
-        this.width = Double.parseDouble(w.trim());
-        this.height = Double.parseDouble(h.trim());
+        this.getContentPane().add(contentPane, BorderLayout.CENTER);
+
+        this.clientScreenDim = clientScreenDim;
         this.socket = socket;
+
+        pack();
     }
 
     @Override
@@ -50,7 +55,11 @@ public class ReceiverForm extends JFrame implements Runnable{
         }
         //Start recieveing screenshots
         screenReceiver = new ScreenReceiver(is, contentPane);
-        eventSender = new EventSender(pw, contentPane, width, height);
+        eventSender = new EventSender(pw, contentPane, clientScreenDim);
         new Thread(screenReceiver).start();
+    }
+
+    private void closeForm(java.awt.event.WindowEvent evt) {
+        screenReceiver.stop();
     }
 }
