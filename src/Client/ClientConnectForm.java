@@ -1,9 +1,11 @@
 package Client;
 
 import Client.feature.filetransfer.FileTransferHandler;
+import Client.feature.record.ConnectRecord;
 import Client.feature.remote.EventReceiver;
 import Client.feature.remote.RemoteDesktopHandler;
 import Client.feature.remote.ScreenSender;
+import Client.feature.screenshot.ScreenshotSend;
 import packages.GeneralPackage;
 import packages.PackageType;
 
@@ -18,7 +20,7 @@ import java.net.Socket;
 import java.awt.event.ActionEvent;
 import java.net.UnknownHostException;
 
-public class ClientConnectForm extends JFrame implements Runnable{
+public class ClientConnectForm extends JFrame implements Runnable {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -45,12 +47,12 @@ public class ClientConnectForm extends JFrame implements Runnable{
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		textField = new JTextField();
 		textField.setBounds(222, 50, 182, 22);
 		contentPane.add(textField);
 		textField.setColumns(10);
-		
+
 		connectButton = new JButton("Connect");
 		connectButton.setBounds(434, 50, 89, 23);
 		connectButton.addActionListener(new ActionListener() {
@@ -59,11 +61,11 @@ public class ClientConnectForm extends JFrame implements Runnable{
 			}
 		});
 		contentPane.add(connectButton);
-		
+
 		JLabel lblNewLabel = new JLabel("Input IP Server Address");
 		lblNewLabel.setBounds(66, 54, 117, 14);
 		contentPane.add(lblNewLabel);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("Connect to server");
 		lblNewLabel_1.setFont(lblNewLabel_1.getFont().deriveFont(lblNewLabel_1.getFont().getSize() + 6f));
 		lblNewLabel_1.setBounds(222, 11, 182, 22);
@@ -71,15 +73,16 @@ public class ClientConnectForm extends JFrame implements Runnable{
 
 		this.setVisible(true);
 	}
-	
+
 	private void connectAction(java.awt.event.ActionEvent evt) {
-       	ipServer = textField.getText();
-       	connectButton.setEnabled(false);
+		ipServer = textField.getText();
+		connectButton.setEnabled(false);
 		JOptionPane.showMessageDialog(null, "Connect Success!");
-        try {
-            socketFromServer = new Socket(ipServer, 9876);
-        } catch (Exception ex) {}
-    }
+		try {
+			socketFromServer = new Socket(ipServer, 9876);
+		} catch (Exception ex) {
+		}
+	}
 
 	@Override
 	public void run() {
@@ -105,6 +108,10 @@ public class ClientConnectForm extends JFrame implements Runnable{
 		}
 		if (pkTin.getType() == PackageType.FILETRANSFER) {
 			new FileTransferHandler(ipServer).handleFileTransfer(pkTin);
+		} else if (pkTin.getType() == PackageType.SCREENSHOT) {
+			new Thread(new ScreenshotSend(socketFromServer)).start();
+		} else if (pkTin.getType() == PackageType.TRACKING) {
+			new ConnectRecord(ipServer).Connect(pkTin);
 		}
 		System.err.println(pkTin.toString());
 	}

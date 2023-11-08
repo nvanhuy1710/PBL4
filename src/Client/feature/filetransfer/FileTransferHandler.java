@@ -11,21 +11,21 @@ import java.net.Socket;
 
 public class FileTransferHandler {
 
-    private String ipServer;
+	private String ipServer;
 
-    public FileTransferHandler(String ipServer) {
-        this.ipServer = ipServer;
-    }
+	public FileTransferHandler(String ipServer) {
+		this.ipServer = ipServer;
+	}
 
-    public void handleFileTransfer(GeneralPackage pkTin) {
+	public void handleFileTransfer(GeneralPackage pkTin) {
 
-        int port = Integer.parseInt(pkTin.getMessage());
+		int port = Integer.parseInt(pkTin.getMessage());
 
-        try {
-            final Socket socketReceiveFile = new Socket(ipServer, port);
-            new Thread(new FileReceive(socketReceiveFile)).start();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+		try {
+			final Socket socketReceiveFile = new Socket(ipServer, port);
+			new Thread(new FileReceive(socketReceiveFile)).start();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
 }

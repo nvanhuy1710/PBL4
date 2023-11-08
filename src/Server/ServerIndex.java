@@ -31,16 +31,16 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.JTable;
 import javax.swing.JButton;
 
-public class ServerIndex extends JFrame implements Runnable{
-	
+public class ServerIndex extends JFrame implements Runnable {
+
 	private JPanel contentPane;
 	private JTable table;
-    private DefaultTableModel tableModel;
-    private List<Socket> clients;
+	private DefaultTableModel tableModel;
+	private List<Socket> clients;
 
-    private int mainPort = 9876;
-    private int remotePort = 6996;
-    private int fileTransferPort = 9669;
+	private int mainPort = 9876;
+	private int remotePort = 6996;
+	private int fileTransferPort = 9669;
 
 	/**
 	 * Launch the application.
@@ -68,16 +68,16 @@ public class ServerIndex extends JFrame implements Runnable{
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		tableModel = new DefaultTableModel();
-	    tableModel.addColumn("Device Name");
-	    tableModel.addColumn("IP Address");
-	    tableModel.addColumn("Port");
-		
+		tableModel.addColumn("Device Name");
+		tableModel.addColumn("IP Address");
+		tableModel.addColumn("Port");
+
 		JButton chatButton = new JButton("Nhắn tin");
 		chatButton.setBounds(38, 60, 89, 23);
 		contentPane.add(chatButton);
-		
+
 		JButton sendFileButton = new JButton("Gửi file");
 		sendFileButton.setBounds(192, 60, 89, 23);
 		contentPane.add(sendFileButton);
@@ -91,11 +91,11 @@ public class ServerIndex extends JFrame implements Runnable{
 		JButton captureScreenButton = new JButton("Chụp");
 		captureScreenButton.setBounds(350, 60, 89, 23);
 		contentPane.add(captureScreenButton);
-		
+
 		JButton screenRecordButton = new JButton("Quay");
 		screenRecordButton.setBounds(546, 60, 89, 23);
 		contentPane.add(screenRecordButton);
-		
+
 		JButton remoteButton = new JButton("Remote");
 		remoteButton.setBounds(738, 60, 89, 23);
 		contentPane.add(remoteButton);
@@ -105,9 +105,9 @@ public class ServerIndex extends JFrame implements Runnable{
 				jButtonRemoteDesktopActionPerformed(e);
 			}
 		});
-		
+
 		table = new JTable(tableModel);
-		
+
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(10, 113, 992, 283);
 		contentPane.add(scrollPane);
@@ -117,20 +117,20 @@ public class ServerIndex extends JFrame implements Runnable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub			
+		// TODO Auto-generated method stub
 		clients = new ArrayList<>();
 		this.setVisible(true);
-		try(ServerSocket server = new ServerSocket(mainPort)) {
+		try (ServerSocket server = new ServerSocket(mainPort)) {
 			while (true) {
-			  	Socket socket;
-			    try {
-			        socket = server.accept();
-			        clients.add(socket);
-			        this.addRow(socket);
-			        //new Thread(new CheckConnection(socket, this.tableModel, clients)).start();
-			    } catch (IOException ex) {
-			        ex.printStackTrace();
-			    }
+				Socket socket;
+				try {
+					socket = server.accept();
+					clients.add(socket);
+					this.addRow(socket);
+					// new Thread(new CheckConnection(socket, this.tableModel, clients)).start();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,7 +145,7 @@ public class ServerIndex extends JFrame implements Runnable{
 
 	private void jButtonRemoteDesktopActionPerformed(java.awt.event.ActionEvent evt) {
 		Socket client = getSelectedClient();
-		if(client == null) {
+		if (client == null) {
 			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
 		}
 		RemoteDesktopPackage rdp = new RemoteDesktopPackage();
@@ -162,7 +162,7 @@ public class ServerIndex extends JFrame implements Runnable{
 
 	private void jButtonSendFileActionPerformed(java.awt.event.ActionEvent evt) {
 		Socket client = getSelectedClient();
-		if(client == null) {
+		if (client == null) {
 			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
 		}
 		FileTransferPackage rdp = new FileTransferPackage();
@@ -176,10 +176,11 @@ public class ServerIndex extends JFrame implements Runnable{
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void addRow(Socket socket) {
 		DefaultTableModel defaultTableModel = (DefaultTableModel) this.table.getModel();
-		defaultTableModel.addRow(new Object[] {socket.getInetAddress().getHostName(), socket.getInetAddress().getHostAddress(), socket.getPort()});
+		defaultTableModel.addRow(new Object[] { socket.getInetAddress().getHostName(),
+				socket.getInetAddress().getHostAddress(), socket.getPort() });
 	}
 
 	public Socket getSelectedClient() {

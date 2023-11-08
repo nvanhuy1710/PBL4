@@ -9,37 +9,37 @@ import java.net.Socket;
 
 public class RemoteDesktopHandler {
 
-    private String ipServer;
+	private String ipServer;
 
-    public RemoteDesktopHandler(String ipServer) {
-        this.ipServer = ipServer;
-    }
-    public void handleRemoteDesktop(GeneralPackage pkTin) {
+	public RemoteDesktopHandler(String ipServer) {
+		this.ipServer = ipServer;
+	}
 
-        int port = Integer.parseInt(pkTin.getMessage());
-        Robot robot;
-        Rectangle rectangle;
+	public void handleRemoteDesktop(GeneralPackage pkTin) {
 
-        try {
-            final Socket socketRemote =
-                    new Socket(ipServer, port);
+		int port = Integer.parseInt(pkTin.getMessage());
+		Robot robot;
+		Rectangle rectangle;
 
-            GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice gDev = gEnv.getDefaultScreenDevice();
+		try {
+			final Socket socketRemote = new Socket(ipServer, port);
 
-            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-            rectangle = new Rectangle(dim);
+			GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice gDev = gEnv.getDefaultScreenDevice();
 
-            robot = new Robot(gDev);
-            ObjectOutputStream dos = new ObjectOutputStream(socketRemote.getOutputStream());
-            dos.writeObject(rectangle);
-            dos.flush();
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			rectangle = new Rectangle(dim);
 
-            ScreenSender screenSender = new ScreenSender(socketRemote, robot, rectangle);
-            new Thread(screenSender).start();
-            new EventReceiver(socketRemote, robot);
-        } catch (IOException | AWTException ex) {
-            ex.printStackTrace();
-        }
-    }
+			robot = new Robot(gDev);
+			ObjectOutputStream dos = new ObjectOutputStream(socketRemote.getOutputStream());
+			dos.writeObject(rectangle);
+			dos.flush();
+
+			ScreenSender screenSender = new ScreenSender(socketRemote, robot, rectangle);
+			new Thread(screenSender).start();
+			new EventReceiver(socketRemote, robot);
+		} catch (IOException | AWTException ex) {
+			ex.printStackTrace();
+		}
+	}
 }

@@ -7,63 +7,51 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Base64;
 
-public class ScreenReceiver implements Runnable{
+public class ScreenReceiver implements Runnable {
 
-    private InputStream inputStream;
-    private final JPanel panel;
-    Image image1 = null;
-    private boolean continueLoop = true;
+	private InputStream inputStream;
+	private final JPanel panel;
+	Image image1 = null;
+	private boolean continueLoop = true;
 
-    public ScreenReceiver(InputStream inputStream, JPanel panel) {
-        this.inputStream = inputStream;
-        this.panel = panel;
-    }
+	public ScreenReceiver(InputStream inputStream, JPanel panel) {
+		this.inputStream = inputStream;
+		this.panel = panel;
+	}
 
-    @Override
-    public void run() {
-        try {
-            //Read screenshots of the client and then draw them
-            while (continueLoop) {
-                byte[] byteArray = (byte[]) new ObjectInputStream(inputStream).readObject();
+	@Override
+	public void run() {
+		try {
+			// Read screenshots of the client and then draw them
+			while (continueLoop) {
+				byte[] byteArray = (byte[]) new ObjectInputStream(inputStream).readObject();
 
-                image1 = ImageIO.read(new ByteArrayInputStream(byteArray));
-                image1 =
-                        image1.getScaledInstance(
-                                panel.getWidth(),
-                                panel.getHeight(),
-                                Image.SCALE_FAST
-                        );
+				image1 = ImageIO.read(new ByteArrayInputStream(byteArray));
+				image1 = image1.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_FAST);
 
-                //Draw the received screenshots
+				// Draw the received screenshots
 
-                Graphics graphics = panel.getGraphics();
-                graphics.drawImage(
-                        image1,
-                        0,
-                        0,
-                        panel.getWidth(),
-                        panel.getHeight(),
-                        panel
-                );
-            }
-        } catch (IOException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-    }
+				Graphics graphics = panel.getGraphics();
+				graphics.drawImage(image1, 0, 0, panel.getWidth(), panel.getHeight(), panel);
+			}
+		} catch (IOException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
+	}
 
-    public void displayImage(byte[] imageData) {
-        try {
-            // Chuyển dữ liệu byte thành hình ảnh BufferedImage
-            BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageData));
+	public void displayImage(byte[] imageData) {
+		try {
+			// Chuyển dữ liệu byte thành hình ảnh BufferedImage
+			BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageData));
 
-            // Hiển thị hình ảnh trên JLabel
-            panel.getGraphics().drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), panel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+			// Hiển thị hình ảnh trên JLabel
+			panel.getGraphics().drawImage(img, 0, 0, panel.getWidth(), panel.getHeight(), panel);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void stop() {
-        this.continueLoop = false;
-    }
+	public void stop() {
+		this.continueLoop = false;
+	}
 }
