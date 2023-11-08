@@ -9,13 +9,9 @@ import packages.PackageType;
 
 import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
@@ -26,6 +22,7 @@ public class ClientConnectForm extends JFrame implements Runnable{
 
 	private JPanel contentPane;
 	private JTextField textField;
+	private JButton connectButton;
 
 	Socket socketFromServer;
 	String ipServer;
@@ -54,7 +51,7 @@ public class ClientConnectForm extends JFrame implements Runnable{
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
-		JButton connectButton = new JButton("New button");
+		connectButton = new JButton("Connect");
 		connectButton.setBounds(434, 50, 89, 23);
 		connectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -77,6 +74,8 @@ public class ClientConnectForm extends JFrame implements Runnable{
 	
 	private void connectAction(java.awt.event.ActionEvent evt) {
        	ipServer = textField.getText();
+       	connectButton.setEnabled(false);
+		JOptionPane.showMessageDialog(null, "Connect Success!");
         try {
             socketFromServer = new Socket(ipServer, 9876);
         } catch (Exception ex) {}

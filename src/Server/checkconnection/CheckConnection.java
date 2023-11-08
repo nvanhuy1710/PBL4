@@ -2,6 +2,7 @@ package Server.checkconnection;
 
 import javax.swing.table.DefaultTableModel;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -26,8 +27,8 @@ public class CheckConnection implements Runnable {
     public void run() {
         for(String key : clients.keySet()) {
             try {
-                DataInputStream dataInputStream = new DataInputStream(clients.get(key).getInputStream());
-                dataInputStream.read();
+                DataOutputStream dos = new DataOutputStream(clients.get(key).getOutputStream());
+                dos.writeUTF("");
             } catch (IOException e) {
                 clients.remove(this.client.getInetAddress().getHostName() + "_" + this.client.getInetAddress().getHostAddress());
                 int rowCount = tableModel.getRowCount();
