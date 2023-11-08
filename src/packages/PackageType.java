@@ -5,4 +5,5 @@ public enum PackageType {
     MESSAGE, // Goi tin goi thong diep
     TRACKING, // Goi tin theo doi
     REMOTE, // Goi tin remote
+    FILETRANSFER, // Goi tin goi file
 }

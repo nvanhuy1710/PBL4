@@ -1,5 +1,6 @@
 package Client;
 
+import Client.feature.filetransfer.FileTransferHandler;
 import Client.feature.remote.EventReceiver;
 import Client.feature.remote.RemoteDesktopHandler;
 import Client.feature.remote.ScreenSender;
@@ -77,7 +78,7 @@ public class ClientConnectForm extends JFrame implements Runnable{
 	private void connectAction(java.awt.event.ActionEvent evt) {
        	ipServer = textField.getText();
         try {
-            socketFromServer = new Socket(ipServer, 8888);
+            socketFromServer = new Socket(ipServer, 9876);
         } catch (Exception ex) {}
     }
 
@@ -101,7 +102,10 @@ public class ClientConnectForm extends JFrame implements Runnable{
 		GeneralPackage pkTin = new GeneralPackage();
 		pkTin.phanTichMessage(msg);
 		if (pkTin.getType() == PackageType.REMOTE) {
-			new RemoteDesktopHandler(ipServer).xuLyRemoteDesktop(pkTin);
+			new RemoteDesktopHandler(ipServer).handleRemoteDesktop(pkTin);
+		}
+		if (pkTin.getType() == PackageType.FILETRANSFER) {
+			new FileTransferHandler(ipServer).handleFileTransfer(pkTin);
 		}
 		System.err.println(pkTin.toString());
 	}

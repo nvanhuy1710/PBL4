@@ -1,8 +1,10 @@
 package Server;
 
 import Server.checkconnection.CheckConnection;
+import Server.feature.filetransfer.FileTransferThread;
 import Server.feature.remote.ReceiverForm;
 import Server.feature.remote.RemoteDesktopThread;
+import packages.FileTransferPackage;
 import packages.RemoteDesktopPackage;
 
 import java.awt.BorderLayout;
@@ -38,6 +40,7 @@ public class ServerIndex extends JFrame implements Runnable{
 
     private int mainPort = 9876;
     private int remotePort = 6996;
+    private int fileTransferPort = 9669;
 
 	/**
 	 * Launch the application.
@@ -78,6 +81,12 @@ public class ServerIndex extends JFrame implements Runnable{
 		JButton sendFileButton = new JButton("Gửi file");
 		sendFileButton.setBounds(192, 60, 89, 23);
 		contentPane.add(sendFileButton);
+		sendFileButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonSendFileActionPerformed(e);
+			}
+		});
 
 		JButton captureScreenButton = new JButton("Chụp");
 		captureScreenButton.setBounds(350, 60, 89, 23);
@@ -103,6 +112,7 @@ public class ServerIndex extends JFrame implements Runnable{
 		scrollPane.setBounds(10, 113, 992, 283);
 		contentPane.add(scrollPane);
 		new Thread(new RemoteDesktopThread(remotePort)).start();
+		new Thread(new FileTransferThread(fileTransferPort)).start();
 	}
 
 	@Override
@@ -110,7 +120,7 @@ public class ServerIndex extends JFrame implements Runnable{
 		// TODO Auto-generated method stub			
 		clients = new ArrayList<>();
 		this.setVisible(true);
-		try(ServerSocket server = new ServerSocket(8888)) {
+		try(ServerSocket server = new ServerSocket(mainPort)) {
 			while (true) {
 			  	Socket socket;
 			    try {
@@ -130,19 +140,34 @@ public class ServerIndex extends JFrame implements Runnable{
 	private void jButtonChatActionPerformed(java.awt.event.ActionEvent evt) {
 	}
 
-	private void jButtonSendFileActionPerformed(java.awt.event.ActionEvent evt) {
-	}
-
 	private void jButtonCaptureActionPerformed(java.awt.event.ActionEvent evt) {
 	}
 
 	private void jButtonRemoteDesktopActionPerformed(java.awt.event.ActionEvent evt) {
 		Socket client = getSelectedClient();
 		if(client == null) {
+			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
 		}
 		RemoteDesktopPackage rdp = new RemoteDesktopPackage();
 		rdp.setCmd("Start");
 		rdp.setMessage(String.valueOf(remotePort));
+		PrintWriter outputToClient;
+		try {
+			outputToClient = new PrintWriter(client.getOutputStream(), true);
+			outputToClient.println(rdp);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	private void jButtonSendFileActionPerformed(java.awt.event.ActionEvent evt) {
+		Socket client = getSelectedClient();
+		if(client == null) {
+			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
+		}
+		FileTransferPackage rdp = new FileTransferPackage();
+		rdp.setCmd("Start");
+		rdp.setMessage(String.valueOf(fileTransferPort));
 		PrintWriter outputToClient;
 		try {
 			outputToClient = new PrintWriter(client.getOutputStream(), true);
