@@ -2,10 +2,12 @@ package Server;
 
 import Server.checkconnection.CheckConnection;
 import Server.feature.filetransfer.FileTransferThread;
+import Server.feature.record.ScreenRecordThread;
 import Server.feature.remote.ReceiverForm;
 import Server.feature.remote.RemoteDesktopThread;
 import packages.FileTransferPackage;
 import packages.RemoteDesktopPackage;
+import packages.ScreenRecordPackage;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -41,6 +43,7 @@ public class ServerIndex extends JFrame implements Runnable {
 	private int mainPort = 9876;
 	private int remotePort = 6996;
 	private int fileTransferPort = 9669;
+	private int screenRecordPort = 6999;
 
 	/**
 	 * Launch the application.
@@ -91,10 +94,22 @@ public class ServerIndex extends JFrame implements Runnable {
 		JButton captureScreenButton = new JButton("Chụp");
 		captureScreenButton.setBounds(350, 60, 89, 23);
 		contentPane.add(captureScreenButton);
+		captureScreenButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonCaptureActionPerformed(e);
+			}
+		});
 
 		JButton screenRecordButton = new JButton("Quay");
 		screenRecordButton.setBounds(546, 60, 89, 23);
 		contentPane.add(screenRecordButton);
+		screenRecordButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonRecordActionPerformed(e);
+			}
+		});
 
 		JButton remoteButton = new JButton("Remote");
 		remoteButton.setBounds(738, 60, 89, 23);
@@ -113,6 +128,7 @@ public class ServerIndex extends JFrame implements Runnable {
 		contentPane.add(scrollPane);
 		new Thread(new RemoteDesktopThread(remotePort)).start();
 		new Thread(new FileTransferThread(fileTransferPort)).start();
+		new Thread(new ScreenRecordThread(screenRecordPort)).start();
 	}
 
 	@Override
@@ -137,16 +153,41 @@ public class ServerIndex extends JFrame implements Runnable {
 		}
 	}
 
+	private void jButtonRecordActionPerformed(java.awt.event.ActionEvent evt) {
+		Socket client = getSelectedClient();
+		if (client == null) {
+			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
+		}
+		ScreenRecordPackage rdp = new ScreenRecordPackage();
+		rdp.setCmd("Start");
+		rdp.setMessage(String.valueOf(screenRecordPort));
+		System.out.println("Sending record package to client!");
+		PrintWriter outputToClient;
+		try {
+			outputToClient = new PrintWriter(client.getOutputStream(), true);
+			outputToClient.println(rdp);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
 	private void jButtonChatActionPerformed(java.awt.event.ActionEvent evt) {
 	}
 
 	private void jButtonCaptureActionPerformed(java.awt.event.ActionEvent evt) {
+		Socket client = getSelectedClient();
+		if (client == null) {
+			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
+			return;
+		}
+		new Thread(new Server.feature.capture.ReceiveForm(client)).start();
 	}
 
 	private void jButtonRemoteDesktopActionPerformed(java.awt.event.ActionEvent evt) {
 		Socket client = getSelectedClient();
 		if (client == null) {
 			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
+			return;
 		}
 		RemoteDesktopPackage rdp = new RemoteDesktopPackage();
 		rdp.setCmd("Start");
@@ -164,6 +205,7 @@ public class ServerIndex extends JFrame implements Runnable {
 		Socket client = getSelectedClient();
 		if (client == null) {
 			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
+			return;
 		}
 		FileTransferPackage rdp = new FileTransferPackage();
 		rdp.setCmd("Start");

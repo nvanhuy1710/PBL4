@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Base64;
 
-public class ScreenSend {
+public class ScreenSend implements Runnable{
 
 	Socket socket = null;
 	Robot robot = null;
@@ -20,10 +20,10 @@ public class ScreenSend {
 		this.socket = socket;
 		this.robot = robot;
 		rectangle = rect;
-		Chupanh();
+		new Thread(this).start();
 	}
 
-	public void Chupanh() {
+	public void run() {
 		try {
 			os = socket.getOutputStream();
 		} catch (IOException ex) {
@@ -46,7 +46,7 @@ public class ScreenSend {
 			}
 
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

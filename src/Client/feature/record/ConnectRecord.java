@@ -24,7 +24,7 @@ public class ConnectRecord {
 		Rectangle rectangle;
 		try {
 			// Tạo socket nhận remote với port đã gởi qua
-			final Socket socketRemote = new Socket("localhost", port);
+			final Socket socketRemote = new Socket(ipServer, port);
 			System.out.println("da ket noi voi record");
 			try {
 				// Lấy màn hình mặc định của hệ thống
