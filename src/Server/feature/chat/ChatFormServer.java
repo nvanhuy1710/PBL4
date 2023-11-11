@@ -1,4 +1,4 @@
-package server;
+package Server.feature.chat;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -29,14 +29,14 @@ public class ChatFormServer implements ActionListener, Runnable{
 	JTextArea chatLog;
 	JScrollPane chatLogScroll;
 	JPanel chatPanel, statusPanel, panel;
-	
-	ServerSocket serverSocket;
+
 	Socket socket;
 	DataOutputStream output;
 	DataInputStream input;
 	
-	public ChatFormServer()
+	public ChatFormServer(Socket socket)
 	{
+		this.socket = socket;
 		init();
 	}
 	
@@ -61,6 +61,7 @@ public class ChatFormServer implements ActionListener, Runnable{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == sendButton) {
+			System.out.println("Sending");
 			try {
 				output = new DataOutputStream(socket.getOutputStream());
 				output.writeUTF(chatField.getText());
@@ -108,7 +109,7 @@ public class ChatFormServer implements ActionListener, Runnable{
 		panel.add(chatPanel);
 		
 		frame.add(panel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setSize(505, 350);
 		frame.setResizable(true);
 		frame.setLayout(null);

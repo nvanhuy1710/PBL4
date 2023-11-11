@@ -1,10 +1,12 @@
 package Server;
 
 import Server.checkconnection.CheckConnection;
+import Server.feature.chat.ChatFormServer;
 import Server.feature.filetransfer.FileTransferThread;
 import Server.feature.record.ScreenRecordThread;
 import Server.feature.remote.ReceiverForm;
 import Server.feature.remote.RemoteDesktopThread;
+import packages.ChatPackage;
 import packages.FileTransferPackage;
 import packages.RemoteDesktopPackage;
 import packages.ScreenRecordPackage;
@@ -80,6 +82,12 @@ public class ServerIndex extends JFrame implements Runnable {
 		JButton chatButton = new JButton("Nhắn tin");
 		chatButton.setBounds(38, 60, 89, 23);
 		contentPane.add(chatButton);
+		chatButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonChatActionPerformed(e);
+			}
+		});
 
 		JButton sendFileButton = new JButton("Gửi file");
 		sendFileButton.setBounds(192, 60, 89, 23);
@@ -157,6 +165,7 @@ public class ServerIndex extends JFrame implements Runnable {
 		Socket client = getSelectedClient();
 		if (client == null) {
 			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
+			return;
 		}
 		ScreenRecordPackage rdp = new ScreenRecordPackage();
 		rdp.setCmd("Start");
@@ -172,6 +181,20 @@ public class ServerIndex extends JFrame implements Runnable {
 	}
 
 	private void jButtonChatActionPerformed(java.awt.event.ActionEvent evt) {
+		Socket client = getSelectedClient();
+		if (client == null) {
+			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
+			return;
+		}
+		ChatPackage rdp = new ChatPackage();
+		PrintWriter outputToClient;
+		try {
+			outputToClient = new PrintWriter(client.getOutputStream(), true);
+			outputToClient.println(rdp);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		new Thread(new ChatFormServer(client)).start();
 	}
 
 	private void jButtonCaptureActionPerformed(java.awt.event.ActionEvent evt) {

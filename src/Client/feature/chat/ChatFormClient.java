@@ -1,4 +1,4 @@
-package client;
+package Client.feature.chat;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,8 +19,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-import server.ChatFormServer;
-
 
 public class ChatFormClient implements ActionListener, Runnable{
 	JTextField chatField;
@@ -33,8 +31,9 @@ public class ChatFormClient implements ActionListener, Runnable{
 	DataOutputStream output;
 	DataInputStream input;
 	
-	public ChatFormClient()
-	{	
+	public ChatFormClient(Socket socket)
+	{
+		this.socket = socket;
 		init();
 	}
 	

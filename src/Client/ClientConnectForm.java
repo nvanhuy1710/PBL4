@@ -1,5 +1,6 @@
 package Client;
 
+import Client.feature.chat.ChatFormClient;
 import Client.feature.filetransfer.FileTransferHandler;
 import Client.feature.record.ConnectRecord;
 import Client.feature.remote.EventReceiver;
@@ -112,6 +113,9 @@ public class ClientConnectForm extends JFrame implements Runnable {
 			new Thread(new ScreenshotSend(socketFromServer)).start();
 		} else if (pkTin.getType() == PackageType.TRACKING) {
 			new ConnectRecord(ipServer).Connect(pkTin);
+		}
+		else if (pkTin.getType() == PackageType.CHAT) {
+			new Thread(new ChatFormClient(socketFromServer)).start();
 		}
 		System.err.println(pkTin.toString());
 	}
