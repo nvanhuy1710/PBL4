@@ -2,6 +2,7 @@ package Server.feature.remote;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
@@ -62,5 +63,10 @@ public class ReceiverForm extends JFrame implements Runnable {
 
 	private void closeForm(java.awt.event.WindowEvent evt) {
 		screenReceiver.stop();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

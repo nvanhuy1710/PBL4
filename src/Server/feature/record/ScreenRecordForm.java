@@ -4,6 +4,7 @@ import Server.feature.record.ScreenReceiver;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
@@ -22,6 +23,11 @@ public class ScreenRecordForm extends JFrame implements Runnable{
     public ScreenRecordForm(Socket socket) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                closeForm(evt);
+            }
+        });
         contentPane = new JPanel();
         contentPane.setPreferredSize(new java.awt.Dimension(1366, 768));
 
@@ -46,4 +52,11 @@ public class ScreenRecordForm extends JFrame implements Runnable{
         new Thread(screenReceiver).start();
     }
 
+    private void closeForm(java.awt.event.WindowEvent evt) {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

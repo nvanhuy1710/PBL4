@@ -10,6 +10,8 @@ public class EventReceiver implements Runnable {
 	Socket socket = null;
 	Robot robot = null;
 
+	boolean continueLoop = true;
+
 	public EventReceiver(Socket socket, Robot robot) {
 		this.socket = socket;
 		this.robot = robot;
@@ -21,7 +23,7 @@ public class EventReceiver implements Runnable {
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(socket.getInputStream());
-			while (true) {
+			while (continueLoop) {
 				// recieve commands and respond accordingly
 
 				int command = scanner.nextInt();
@@ -44,7 +46,11 @@ public class EventReceiver implements Runnable {
 				}
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			this.continueLoop = false;
 		}
+	}
+
+	public void stop() {
+		this.continueLoop = false;
 	}
 }
