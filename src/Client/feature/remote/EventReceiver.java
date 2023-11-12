@@ -3,6 +3,7 @@ package Client.feature.remote;
 import java.awt.*;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class EventReceiver implements Runnable {
@@ -45,7 +46,7 @@ public class EventReceiver implements Runnable {
 					break;
 				}
 			}
-		} catch (IOException ex) {
+		} catch (IOException | NoSuchElementException ex) {
 			this.continueLoop = false;
 		}
 	}

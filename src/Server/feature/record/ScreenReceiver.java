@@ -35,8 +35,9 @@ public class ScreenReceiver implements Runnable {
 					graphics.drawImage(image1, 0, 0, panel.getWidth(), panel.getHeight(), panel);
 				}
 			} catch (IOException | ClassNotFoundException ex) {
-				System.out.println("Ko hien thi duoc");
-				ex.printStackTrace();
+//				System.out.println("Ko hien thi duoc");
+//				ex.printStackTrace();
+				break;
 			}
 		}
 	}

@@ -78,11 +78,13 @@ public class ClientConnectForm extends JFrame implements Runnable {
 	private void connectAction(java.awt.event.ActionEvent evt) {
 		ipServer = textField.getText();
 		connectButton.setEnabled(false);
-		JOptionPane.showMessageDialog(null, "Connect Success!");
 		try {
 			socketFromServer = new Socket(ipServer, 9876);
 		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null, "Connect Failure!");
+			return;
 		}
+		JOptionPane.showMessageDialog(null, "Connect Success!");
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class ScreenSender implements Runnable {
 				// oos.writeUTF(byteString);
 				Thread.sleep(100);
 			} catch (IOException | InterruptedException ex) {
-				ex.printStackTrace();
+				//ex.printStackTrace();
 				break;
 			}
 		}
