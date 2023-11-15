@@ -1,6 +1,7 @@
 package Client.feature.remote;
 
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.NoSuchElementException;
@@ -30,10 +31,12 @@ public class EventReceiver implements Runnable {
 				int command = scanner.nextInt();
 				switch (command) {
 				case -1:
-					robot.mousePress(scanner.nextInt());
+					int mask = InputEvent.getMaskForButton(scanner.nextInt());
+					robot.mousePress(mask);
 					break;
 				case -2:
-					robot.mouseRelease(scanner.nextInt());
+					int masktmp = InputEvent.getMaskForButton(scanner.nextInt());
+					robot.mouseRelease(masktmp);
 					break;
 				case -3:
 					robot.keyPress(scanner.nextInt());
@@ -43,6 +46,9 @@ public class EventReceiver implements Runnable {
 					break;
 				case -5:
 					robot.mouseMove(scanner.nextInt(), scanner.nextInt());
+					break;
+				case -6:
+					robot.mouseWheel(scanner.nextInt());
 					break;
 				}
 			}

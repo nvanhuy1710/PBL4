@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.PrintWriter;
 
-public class EventSender implements KeyListener, MouseListener, MouseMotionListener {
+public class EventSender implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private final PrintWriter pw;
 	private final JPanel panel;
@@ -20,6 +20,7 @@ public class EventSender implements KeyListener, MouseListener, MouseMotionListe
 		panel.addKeyListener(this);
 		panel.addMouseListener(this);
 		panel.addMouseMotionListener(this);
+		panel.addMouseWheelListener(this);
 	}
 
 	@Override
@@ -48,24 +49,14 @@ public class EventSender implements KeyListener, MouseListener, MouseMotionListe
 	@Override
 	public void mousePressed(MouseEvent e) {
 		pw.println(-1);
-		int button = e.getButton();
-		int xButton = 16;
-		if (button == 3) {
-			xButton = 4;
-		}
-		pw.println(xButton);
+		pw.println(e.getButton());
 		pw.flush();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		pw.println(-2);
-		int button = e.getButton();
-		int xButton = 16;
-		if (button == 3) {
-			xButton = 4;
-		}
-		pw.println(xButton);
+		pw.println(e.getButton());
 		pw.flush();
 	}
 
@@ -96,6 +87,13 @@ public class EventSender implements KeyListener, MouseListener, MouseMotionListe
 		pw.println(-5);
 		pw.println((int) (e.getX() * xScale));
 		pw.println((int) (e.getY() * yScale));
+		pw.flush();
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		pw.println(-6);
+		pw.println(e.getWheelRotation());
 		pw.flush();
 	}
 }
