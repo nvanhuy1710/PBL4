@@ -101,7 +101,7 @@ public class ServerIndex extends JFrame implements Runnable {
 		});
 
 		JButton sendFileButton = new JButton("Gửi file");
-		sendFileButton.setBounds(192, 60, 89, 23);
+		sendFileButton.setBounds(293, 60, 89, 23);
 		contentPane.add(sendFileButton);
 		sendFileButton.addActionListener(new ActionListener() {
 			@Override
@@ -111,7 +111,7 @@ public class ServerIndex extends JFrame implements Runnable {
 		});
 
 		JButton captureScreenButton = new JButton("Chụp");
-		captureScreenButton.setBounds(350, 60, 89, 23);
+		captureScreenButton.setBounds(406, 60, 89, 23);
 		contentPane.add(captureScreenButton);
 		captureScreenButton.addActionListener(new ActionListener() {
 			@Override
