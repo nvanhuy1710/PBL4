@@ -119,6 +119,9 @@ public class ClientConnectForm extends JFrame implements Runnable {
 		else if (pkTin.getType() == PackageType.CHAT) {
 			new Thread(new ChatFormClient(socketFromServer)).start();
 		}
+		else if (pkTin.getType() == PackageType.MESSAGE) {
+			JOptionPane.showMessageDialog(null, pkTin.getMessage(), "Thông điệp từ máy chủ", JOptionPane.INFORMATION_MESSAGE);
+		}
 		System.err.println(pkTin.toString());
 	}
 }

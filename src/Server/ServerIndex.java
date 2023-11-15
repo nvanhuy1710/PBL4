@@ -3,6 +3,7 @@ package Server;
 import Server.checkconnection.CheckConnection;
 import Server.feature.chat.ChatFormServer;
 import Server.feature.filetransfer.FileTransferThread;
+import Server.feature.message.SendMessageForm;
 import Server.feature.record.ScreenRecordThread;
 import Server.feature.remote.ReceiverForm;
 import Server.feature.remote.RemoteDesktopThread;
@@ -80,12 +81,22 @@ public class ServerIndex extends JFrame implements Runnable {
 		tableModel.addColumn("Port");
 
 		JButton chatButton = new JButton("Nhắn tin");
-		chatButton.setBounds(38, 60, 89, 23);
+		chatButton.setBounds(29, 60, 89, 23);
 		contentPane.add(chatButton);
 		chatButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jButtonChatActionPerformed(e);
+			}
+		});
+
+		JButton messageButton = new JButton("Thông điệp");
+		messageButton.setBounds(177, 60, 89, 23);
+		contentPane.add(messageButton);
+		messageButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButtonMessageActionPerformed(e);
 			}
 		});
 
@@ -159,6 +170,10 @@ public class ServerIndex extends JFrame implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void jButtonMessageActionPerformed(java.awt.event.ActionEvent evt) {
+		new SendMessageForm(clients);
 	}
 
 	private void jButtonRecordActionPerformed(java.awt.event.ActionEvent evt) {
