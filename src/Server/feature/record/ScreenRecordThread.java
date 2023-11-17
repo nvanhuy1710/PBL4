@@ -20,50 +20,53 @@ import javax.swing.border.EmptyBorder;
 import Server.feature.capture.ReceiveForm;
 import Server.feature.remote.ReceiverForm;
 
-public class ScreenRecordThread extends JFrame implements Runnable {
-	private int port;
-	private JPanel contentPane;
+public class ScreenRecordThread extends JFrame implements Runnable{
+  private int port;
+  private JPanel contentPane;
 
 	public ScreenRecordThread(int tr) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 80, 1000, 600);
-		this.setLayout(new BorderLayout());
-		contentPane = new JPanel();
-		this.add(contentPane, BorderLayout.CENTER);
-		this.port = tr;
-		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent evt) {
-				Thread.currentThread().interrupt();
-			}
-		});
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 80, 1000, 600);
+        this.setLayout(new BorderLayout());
+        contentPane = new JPanel();
+        this.add(contentPane, BorderLayout.CENTER);
+        this.port = tr;
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+            	  Thread.currentThread().interrupt();           
+            }
+        });
 	}
-
+	
 	@Override
 	public void run() {
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setVisible(true);
-		try {
-			final ServerSocket server = new ServerSocket(port);
-			System.out.println("da mo cong " + port);
-			while (true) {
-				Socket socket;
-				try {
-					socket = server.accept();
-					System.out.println("da ket noi vs record");
-					InputStream is = socket.getInputStream();
-
-					new Thread(new ScreenReceiver(is, contentPane)).start();
-
+		setLocationRelativeTo (null);
+	    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    this.setVisible(true);
+        try {
+            final ServerSocket server = new ServerSocket(port);
+            System.out.println("da mo cong "+port);
+            while (true) {
+                Socket socket;
+                try {
+                    socket = server.accept();
+                    System.out.println("da ket noi vs record");
+                    InputStream  is = socket.getInputStream();
+                    
+                    new Thread(new ScreenReceiver(is, contentPane)).start();
+                  
 //                    new Thread(new ReceiveForm(socket)).start();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    
+		
 	}
+	
+	
 
 }

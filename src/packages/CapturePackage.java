@@ -1,9 +1,9 @@
 package packages;
 
-public class CapturePackage extends GeneralPackage {
-	public static final PackageType type = PackageType.SCREENSHOT;
+public class CapturePackage extends GeneralPackage{
+    public static final PackageType type = PackageType.SCREENSHOT;
 
-	public CapturePackage() {
-		setType(type);
-	}
+    public CapturePackage() {
+        setType(type);
+    }
 }

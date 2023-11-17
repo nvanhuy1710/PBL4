@@ -7,49 +7,49 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Base64;
 
-public class ScreenSend {
+public class ScreenSend{
 
-	Socket socket = null;
-	Robot robot = null;
-	Rectangle rectangle = null;
-	boolean continueLoop = true;
+    Socket socket = null;
+    Robot robot = null;
+    Rectangle rectangle = null;
+    boolean continueLoop = true;
 
-	OutputStream os = null;
+    OutputStream os = null;
 
-	public ScreenSend(Socket socket, Robot robot, Rectangle rect) {
-		this.socket = socket;
-		this.robot = robot;
-		rectangle = rect;
-		Chupanh();
-	}
+    public ScreenSend(Socket socket, Robot robot, Rectangle rect) {
+        this.socket = socket;
+        this.robot = robot;
+        rectangle = rect;
+        Chupanh();
+    }
 
-	public void Chupanh() {
-		try {
-			os = socket.getOutputStream();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+    public void Chupanh() {
+        try {
+            os = socket.getOutputStream();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-		while (continueLoop) {
-			BufferedImage image = robot.createScreenCapture(rectangle);
-			try {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				ImageIO.write(image, "png", baos);
-				byte[] imgData = baos.toByteArray();
-				ObjectOutputStream oos = new ObjectOutputStream(os);
-				oos.writeObject(imgData);
-				oos.flush();
-				System.out.println("da gui");
-				// oos.writeUTF(byteString);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+        while (continueLoop) {
+            BufferedImage image = robot.createScreenCapture(rectangle);
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "png", baos);
+                byte[] imgData = baos.toByteArray();
+                ObjectOutputStream oos = new ObjectOutputStream(os);
+                oos.writeObject(imgData);
+                oos.flush();
+                System.out.println("da gui");
+                //oos.writeUTF(byteString);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
