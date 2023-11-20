@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 
-public class ChatFormClient implements ActionListener, Runnable{
+public class ChatFormClient extends JFrame implements ActionListener{
 	JTextField chatField;
 	JButton sendButton;
 	JTextArea chatLog;
@@ -36,22 +36,11 @@ public class ChatFormClient implements ActionListener, Runnable{
 		this.socket = socket;
 		init();
 	}
-	
-	@Override
-	public void run() {
-		try {
-			String s;
-			input = new DataInputStream(socket.getInputStream());
-			while(true)
-			{
-				if(socket != null) {
-					s = "Server: " + input.readUTF() + "\n";
-					chatLog.append(s);
-				}
-				Thread.sleep(1000);
-			}
-		} catch (Exception e) {
-		}
+
+	public void receiveMessage(String body) {
+		String s = "Server: " + body + "\n";
+		System.out.println("Client receive: " + s + "\n");
+		chatLog.append(s);
 	}
 	
 	@Override
@@ -68,7 +57,7 @@ public class ChatFormClient implements ActionListener, Runnable{
 	}
 	
 	private void init() {
-		JFrame frame = new JFrame("Client Chat");
+		this.setName("Client chat");
 		Border grayLine = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
 		Border blackLine = BorderFactory.createLineBorder(Color.BLACK, 1);
 				
@@ -100,12 +89,12 @@ public class ChatFormClient implements ActionListener, Runnable{
 		panel.add(statusPanel);
 		panel.add(chatPanel);
 		
-		frame.add(panel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(505, 350);
-		frame.setResizable(true);
-		frame.setLayout(null);
-		frame.setLocation(700, 300);;
-		frame.setVisible(true);
+		this.add(panel);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(505, 350);
+		this.setResizable(true);
+		this.setLayout(null);
+		this.setLocation(700, 300);;
+		this.setVisible(true);
 	}
 }

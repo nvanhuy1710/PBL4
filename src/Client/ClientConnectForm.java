@@ -29,6 +29,7 @@ public class ClientConnectForm extends JFrame implements Runnable {
 
 	Socket socketFromServer;
 	String ipServer;
+	ChatFormClient chatForm;
 
 	/**
 	 * Launch the application.
@@ -117,7 +118,13 @@ public class ClientConnectForm extends JFrame implements Runnable {
 			new ConnectRecord(ipServer).Connect(pkTin);
 		}
 		else if (pkTin.getType() == PackageType.CHAT) {
-			new Thread(new ChatFormClient(socketFromServer)).start();
+			if (chatForm == null) {
+				chatForm = new ChatFormClient(socketFromServer);
+			}
+			chatForm.receiveMessage(pkTin.getMessage());
+			if (!chatForm.isVisible()) {
+				chatForm.setVisible(true);
+			}
 		}
 		else if (pkTin.getType() == PackageType.MESSAGE) {
 			JOptionPane.showMessageDialog(null, pkTin.getMessage(), "Thông điệp từ máy chủ", JOptionPane.INFORMATION_MESSAGE);

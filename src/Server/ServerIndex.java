@@ -201,14 +201,6 @@ public class ServerIndex extends JFrame implements Runnable {
 			JOptionPane.showMessageDialog(null, "Bạn chưa chọn client!");
 			return;
 		}
-		ChatPackage rdp = new ChatPackage();
-		PrintWriter outputToClient;
-		try {
-			outputToClient = new PrintWriter(client.getOutputStream(), true);
-			outputToClient.println(rdp);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
 		new Thread(new ChatFormServer(client)).start();
 	}
 

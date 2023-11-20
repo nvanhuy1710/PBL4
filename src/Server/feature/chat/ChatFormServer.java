@@ -1,5 +1,7 @@
 package Server.feature.chat;
 
+import packages.ChatPackage;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -50,9 +53,9 @@ public class ChatFormServer implements ActionListener, Runnable{
 			{
 				if(socket != null) {
 					s = "Client: " + input.readUTF() + "\n";
+					System.out.println("Server receive: " + s + "\n");
 					chatLog.append(s);
 				}
-				Thread.sleep(1000);
 			}
 		} catch (Exception e) {
 		}
@@ -62,13 +65,18 @@ public class ChatFormServer implements ActionListener, Runnable{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == sendButton) {
 			System.out.println("Sending");
+			ChatPackage chatPackage = new ChatPackage();
+			String mes = chatField.getText();
+			chatPackage.setMessage(mes);
+			chatField.setText("");
+			PrintWriter outputToClient;
 			try {
-				output = new DataOutputStream(socket.getOutputStream());
-				output.writeUTF(chatField.getText());
-				output.flush();
-				chatField.setText("");
-			} catch (Exception e2) {
+				outputToClient = new PrintWriter(socket.getOutputStream(), true);
+				outputToClient.println(chatPackage);
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
+			System.out.println("Sent");
 		}
 	}
 	
