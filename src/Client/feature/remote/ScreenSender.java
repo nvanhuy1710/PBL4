@@ -39,7 +39,7 @@ public class ScreenSender implements Runnable {
 				oos.writeObject(imgData);
 				oos.flush();
 				// oos.writeUTF(byteString);
-				Thread.sleep(10000);
+				Thread.sleep(1000);
 			} catch (IOException | InterruptedException ex) {
 				//ex.printStackTrace();
 				break;

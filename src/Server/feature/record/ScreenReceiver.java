@@ -12,6 +12,7 @@ public class ScreenReceiver implements Runnable {
 	private InputStream inputStream;
 	private JPanel panel;
 	Image image1 = null;
+	private boolean continueLoop = true;
 
 	public ScreenReceiver(InputStream inputStream, JPanel panel) {
 		this.inputStream = inputStream;
@@ -27,7 +28,7 @@ public class ScreenReceiver implements Runnable {
 					byte[] byteArray = (byte[]) new ObjectInputStream(inputStream).readObject();
 
 					image1 = ImageIO.read(new ByteArrayInputStream(byteArray));
-					image1 = image1.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_FAST);
+					//image1 = image1.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_FAST);
 
 					// Draw the received screenshots
 
@@ -52,5 +53,9 @@ public class ScreenReceiver implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void stop() {
+		this.continueLoop = false;
 	}
 }

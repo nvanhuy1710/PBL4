@@ -17,15 +17,16 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.awt.event.ActionEvent;
 import java.net.UnknownHostException;
 
 public class ClientConnectForm extends JFrame implements Runnable {
 
-	private JPanel contentPane;
-	private JTextField textField;
-	private JButton connectButton;
+	private final JTextField textField;
+	private final JButton connectButton;
+	private final JLabel lblStatus;
 
 	Socket socketFromServer;
 	String ipServer;
@@ -34,29 +35,32 @@ public class ClientConnectForm extends JFrame implements Runnable {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnknownHostException {
 		new Thread(new ClientConnectForm()).start();
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public ClientConnectForm() {
+	public ClientConnectForm() throws UnknownHostException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 665, 133);
-		contentPane = new JPanel();
+		setBounds(100, 100, 340, 267);
+		JPanel contentPane = new JPanel();
+		contentPane.setBackground(new Color(192, 192, 192));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		textField = new JTextField();
-		textField.setBounds(222, 50, 182, 22);
+		textField.setBounds(112, 50, 182, 22);
 		contentPane.add(textField);
 		textField.setColumns(10);
 
-		connectButton = new JButton("Connect");
-		connectButton.setBounds(434, 50, 89, 23);
+		connectButton = new JButton("Kết nối");
+		connectButton.setBackground(new Color(155, 225, 255));
+		connectButton.setForeground(new Color(0, 0, 0));
+		connectButton.setBounds(30, 158, 105, 24);
 		connectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				connectAction(e);
@@ -64,28 +68,69 @@ public class ClientConnectForm extends JFrame implements Runnable {
 		});
 		contentPane.add(connectButton);
 
-		JLabel lblNewLabel = new JLabel("Input IP Server Address");
-		lblNewLabel.setBounds(66, 54, 117, 14);
+		JLabel lblNewLabel = new JLabel("Nhập địa chỉ IP");
+		lblNewLabel.setBounds(20, 54, 82, 14);
 		contentPane.add(lblNewLabel);
 
-		JLabel lblNewLabel_1 = new JLabel("Connect to server");
+		JLabel lblNewLabel_1 = new JLabel("Kết nối Server");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setFont(lblNewLabel_1.getFont().deriveFont(lblNewLabel_1.getFont().getSize() + 6f));
-		lblNewLabel_1.setBounds(222, 11, 182, 22);
+		lblNewLabel_1.setBounds(66, 11, 182, 22);
 		contentPane.add(lblNewLabel_1);
+
+		JLabel lblNewLabel_2 = new JLabel("Tên máy");
+		lblNewLabel_2.setBounds(20, 83, 82, 14);
+		contentPane.add(lblNewLabel_2);
+
+		JLabel lblNameDevice = new JLabel();
+		lblNameDevice.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNameDevice.setText(InetAddress.getLocalHost().getHostName());
+		lblNameDevice.setBounds(112, 83, 182, 14);
+		contentPane.add(lblNameDevice);
+
+		JLabel lblNewLabel_4 = new JLabel("Địa chỉ IP");
+		lblNewLabel_4.setBounds(20, 108, 82, 14);
+		contentPane.add(lblNewLabel_4);
+
+		JLabel lblIP = new JLabel();
+		lblIP.setHorizontalAlignment(SwingConstants.CENTER);
+		lblIP.setText(InetAddress.getLocalHost().getHostAddress());
+		lblIP.setBounds(112, 108, 182, 14);
+		contentPane.add(lblIP);
+
+		JLabel lblNewLabel_8 = new JLabel("Trạng thái");
+		lblNewLabel_8.setBounds(20, 133, 82, 14);
+		contentPane.add(lblNewLabel_8);
+
+		lblStatus = new JLabel();
+		lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStatus.setBounds(112, 133, 182, 14);
+		lblStatus.setText("Đang chờ kết nối...");
+		contentPane.add(lblStatus);
+
+		JButton btnNewButton = new JButton("Thoát");
+		btnNewButton.setBackground(new Color(255, 77, 77));
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		btnNewButton.setBounds(178, 159, 105, 24);
+		contentPane.add(btnNewButton);
 
 		this.setVisible(true);
 	}
 
 	private void connectAction(java.awt.event.ActionEvent evt) {
 		ipServer = textField.getText();
-		connectButton.setEnabled(false);
 		try {
 			socketFromServer = new Socket(ipServer, 9876);
+			lblStatus.setText("Đã kết nối Server");
+			connectButton.setEnabled(false);
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(null, "Connect Failure!");
+			JOptionPane.showMessageDialog(null, "Kết nối thất bại!");
 			return;
 		}
-		JOptionPane.showMessageDialog(null, "Connect Success!");
 	}
 
 	@Override
@@ -121,10 +166,12 @@ public class ClientConnectForm extends JFrame implements Runnable {
 			if (chatForm == null) {
 				chatForm = new ChatFormClient(socketFromServer);
 			}
-			chatForm.receiveMessage(pkTin.getMessage());
 			if (!chatForm.isVisible()) {
+				chatForm.clearMessage();
 				chatForm.setVisible(true);
 			}
+			chatForm.sendRedunant();
+			chatForm.receiveMessage(pkTin.getMessage());
 		}
 		else if (pkTin.getType() == PackageType.MESSAGE) {
 			JOptionPane.showMessageDialog(null, pkTin.getMessage(), "Thông điệp từ máy chủ", JOptionPane.INFORMATION_MESSAGE);

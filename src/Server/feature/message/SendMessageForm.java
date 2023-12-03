@@ -17,16 +17,9 @@ import java.util.List;
 public class SendMessageForm extends JFrame {
 
     private JPanel contentPane;
-    private JTextField textField;
+    private JTextArea textArea;
 
     private List<Socket> sockets;
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        new SendMessageForm(null);
-    }
 
     /**
      * Create the frame.
@@ -35,7 +28,7 @@ public class SendMessageForm extends JFrame {
         this.sockets = sockets;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 367, 192);
+        setBounds(100, 100, 367, 207);
         contentPane = new JPanel();
         contentPane.setForeground(new Color(0, 0, 255));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -43,18 +36,14 @@ public class SendMessageForm extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        textField = new JTextField();
-        textField.setBounds(10, 55, 328, 20);
-        contentPane.add(textField);
-        textField.setColumns(10);
-
-        JLabel lblNewLabel = new JLabel("Nhập thông điệp cho tất cả clients");
-        lblNewLabel.setForeground(new Color(153, 51, 0));
+        JLabel lblNewLabel = new JLabel("Nhập thông điệp");
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel.setForeground(new Color(0, 0, 0));
         lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel.setBounds(99, 0, 142, 43);
+        lblNewLabel.setBounds(103, 0, 147, 43);
         contentPane.add(lblNewLabel);
 
-        JButton btnNewButton_1 = new JButton("Send");
+        JButton btnNewButton_1 = new JButton("Gởi");
         btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
         btnNewButton_1.setForeground(new Color(0, 0, 0));
         btnNewButton_1.addActionListener(new ActionListener() {
@@ -62,14 +51,18 @@ public class SendMessageForm extends JFrame {
                 handleMessageButton(e);
             }
         });
-        btnNewButton_1.setBounds(129, 124, 89, 20);
+        btnNewButton_1.setBounds(129, 124, 89, 31);
         contentPane.add(btnNewButton_1);
+
+        textArea = new JTextArea();
+        textArea.setBounds(10, 48, 343, 71);
+        contentPane.add(textArea);
 
         this.setVisible(true);
     }
 
     public void handleMessageButton(ActionEvent e) {
-        String message = textField.getText();
+        String message = textArea.getText();
         for(Socket socket : sockets) {
             MessagePackage messagePackage = new MessagePackage();
             messagePackage.setMessage(message);
@@ -78,7 +71,6 @@ public class SendMessageForm extends JFrame {
                 outputToClient = new PrintWriter(socket.getOutputStream(), true);
                 outputToClient.println(messagePackage);
             } catch (IOException ex) {
-                ex.printStackTrace();
             }
             JOptionPane.showMessageDialog(null, "Đã gửi");
             dispose();

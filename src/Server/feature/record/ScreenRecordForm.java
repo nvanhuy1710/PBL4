@@ -53,6 +53,7 @@ public class ScreenRecordForm extends JFrame implements Runnable{
     }
 
     private void closeForm(java.awt.event.WindowEvent evt) {
+        screenReceiver.stop();
         try {
             socket.close();
         } catch (IOException e) {

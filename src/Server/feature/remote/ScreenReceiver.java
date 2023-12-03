@@ -27,7 +27,7 @@ public class ScreenReceiver implements Runnable {
 				byte[] byteArray = (byte[]) new ObjectInputStream(inputStream).readObject();
 
 				image1 = ImageIO.read(new ByteArrayInputStream(byteArray));
-				image1 = image1.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_DEFAULT);
+				//image1 = image1.getScaledInstance(panel.getWidth(), panel.getHeight(), Image.SCALE_DEFAULT);
 
 				// Draw the received screenshots
 

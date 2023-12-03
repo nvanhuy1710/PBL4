@@ -4,15 +4,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import packages.CapturePackage;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -32,7 +29,7 @@ public class ReceiveForm extends JFrame implements Runnable {
 
 	public ReceiveForm(Socket socket) {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1435, 762);
+		setBounds(100, 100, 1064, 556);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -40,15 +37,15 @@ public class ReceiveForm extends JFrame implements Runnable {
 		contentPane.setLayout(null);
 
 		JButton btnNewButton = new JButton("Chụp ảnh");
-		btnNewButton.setBounds(493, 26, 85, 21);
+		btnNewButton.setBounds(319, 26, 85, 21);
 		contentPane.add(btnNewButton);
 
 		JButton btnNewButton_1 = new JButton("Lưu");
-		btnNewButton_1.setBounds(788, 26, 85, 21);
+		btnNewButton_1.setBounds(645, 26, 85, 21);
 		contentPane.add(btnNewButton_1);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(74, 57, 1258, 643);
+		panel.setBounds(10, 58, 1030, 453);
 		contentPane.add(panel);
 
 		btnNewButton_1.addActionListener(new ActionListener() {

@@ -20,23 +20,26 @@ public class FileTransferForm extends JFrame implements Runnable {
 	private JButton cancelButton;
 
 	public FileTransferForm(Socket socket) {
+		Color bkColor = Color.decode("#B9B9B9");
 		this.socket = socket;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 457, 150);
+		setBounds(100, 100, 352, 148);
 		contentPane = new JPanel();
-		contentPane.setForeground(new Color(0, 0, 255));
+		contentPane.setForeground(new Color(255, 128, 64));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(bkColor);
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		textField = new JTextField();
 		textField.setEditable(false);
-		textField.setBounds(17, 39, 328, 20);
+		textField.setBounds(10, 33, 240, 22);
 		contentPane.add(textField);
 		textField.setColumns(10);
 
-		findButton = new JButton("Tìm");
+		findButton = new JButton("Chọn");
+		findButton.setFocusPainted(false);
 		findButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -44,11 +47,13 @@ public class FileTransferForm extends JFrame implements Runnable {
 			}
 		});
 		findButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		findButton.setForeground(new Color(0, 0, 0));
-		findButton.setBounds(355, 39, 78, 20);
+		findButton.setBounds(260, 33, 70, 22);
 		contentPane.add(findButton);
 
 		sendButton = new JButton("Gửi");
+		sendButton.setForeground(Color.WHITE);
+		sendButton.setBackground(Color.decode("#BFFAB8"));
+		sendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/checked.png")));
 		sendButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		sendButton.setForeground(new Color(0, 0, 0));
 		sendButton.addActionListener(new ActionListener() {
@@ -56,10 +61,13 @@ public class FileTransferForm extends JFrame implements Runnable {
 				sendFileEvent(e);
 			}
 		});
-		sendButton.setBounds(71, 80, 89, 20);
+		sendButton.setBounds(30, 73, 80, 29);
 		contentPane.add(sendButton);
 
 		cancelButton = new JButton("Hủy");
+		cancelButton.setForeground(Color.WHITE);
+		cancelButton.setBackground(Color.decode("#C9CAC9"));
+		cancelButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/cancel.png")));
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -68,13 +76,14 @@ public class FileTransferForm extends JFrame implements Runnable {
 		});
 		cancelButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		cancelButton.setForeground(new Color(0, 0, 0));
-		cancelButton.setBounds(274, 80, 89, 20);
+		cancelButton.setBounds(179, 73, 89, 29);
 		contentPane.add(cancelButton);
 
 		JLabel lblNewLabel = new JLabel("Chọn File");
-		lblNewLabel.setForeground(new Color(153, 51, 0));
+		lblNewLabel.setHorizontalAlignment(JLabel.CENTER);
+		lblNewLabel.setForeground(new Color(0, 0, 0));
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		lblNewLabel.setBounds(165, 0, 142, 43);
+		lblNewLabel.setBounds(66, 0, 152, 41);
 		contentPane.add(lblNewLabel);
 		this.setVisible(true);
 	}
